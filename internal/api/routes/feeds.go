@@ -29,8 +29,18 @@ func (cfg *APIConfig) HandleFeedCreate(w http.ResponseWriter, r *http.Request, u
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create feed")
 		return
 	}
+	feedFollow, err := models.FollowFeed(cfg, feed.ID, user.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't follow feed")
+		return
+	}
 
-	respondWithJSON(w, http.StatusCreated, *feed)
+	resp := struct {
+		Feed       *db.Feed        `json:"feed"`
+		FeedFollow *db.FeedsFollow `json:"feed_follow"`
+	}{feed, feedFollow}
+
+	respondWithJSON(w, http.StatusCreated, resp)
 }
 
 func (cfg *APIConfig) HandleFeedGetAll(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +55,7 @@ func (cfg *APIConfig) HandleFeedGetAll(w http.ResponseWriter, r *http.Request) {
 
 func (cfg *APIConfig) HandleFeedFollowsCreate(w http.ResponseWriter, r *http.Request, user *db.User) {
 	type parameters struct {
-		FeedID  string `json:"feed_id"`
+		FeedID string `json:"feed_id"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -56,7 +66,7 @@ func (cfg *APIConfig) HandleFeedFollowsCreate(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-  feedID, err := uuid.Parse(params.FeedID)
+	feedID, err := uuid.Parse(params.FeedID)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode feed_id")
 		return
@@ -83,10 +93,10 @@ func (cfg *APIConfig) HandleFeedFollowsGetMany(w http.ResponseWriter, r *http.Re
 
 func (cfg *APIConfig) HandleFeedFollowsDelete(w http.ResponseWriter, r *http.Request, user *db.User) {
 	feedFollowID := r.URL.Query().Get("feedFollowID")
-	id , err := uuid.Parse(feedFollowID)
+	id, err := uuid.Parse(feedFollowID)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode feedFollowID")
-		return 
+		return
 	}
 
 	err = models.DeleteFeed(cfg, id)
