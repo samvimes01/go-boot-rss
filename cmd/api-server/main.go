@@ -3,23 +3,22 @@ package main
 import (
 	"net/http"
 
-	"github.com/samvimes01/go-rss/internal/api/middlewares"
+	"github.com/samvimes01/go-rss/internal/api/middleware"
 	"github.com/samvimes01/go-rss/internal/api/routes"
 	"github.com/samvimes01/go-rss/internal/env"
 )
 
-var envir *env.Env
-var cfg *routes.APIConfig
-
-func init() {
-	envir = env.NewEnv()
-	cfg = routes.NewAPIConfig(envir)
-}
 
 func main() {
+	envir := env.NewEnv()
+	cfg := routes.NewAPIConfig(envir)
+
 	mux := http.NewServeMux()
+
 	routes.Setup(envir, mux, cfg)
-	corsHandler := middlewares.Cors(mux)
+	
+	corsHandler := middleware.Cors(mux)
+	
 	server := http.Server{
 		Handler: corsHandler,
 		Addr:    envir.Host + ":" + envir.Port,

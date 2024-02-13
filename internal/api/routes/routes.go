@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"github.com/samvimes01/go-rss/internal/api/middlewares"
+	"github.com/samvimes01/go-rss/internal/api/middleware"
 	"github.com/samvimes01/go-rss/internal/env"
 )
 
@@ -21,7 +21,11 @@ func Setup(env *env.Env, mux *http.ServeMux, cfg *APIConfig) {
 	mux.HandleFunc(makePattern(http.MethodGet, "users"), cfg.HandleUserGetCurrent)
 
 	mux.HandleFunc(makePattern(http.MethodGet, "feeds"), cfg.HandleFeedGetAll)
-	mux.HandleFunc(makePattern(http.MethodPost, "feeds"), middlewares.Auth(cfg, cfg.HandleFeedCreate))
+	mux.HandleFunc(makePattern(http.MethodPost, "feeds"), middleware.Auth(cfg, cfg.HandleFeedCreate))
+
+	mux.HandleFunc(makePattern(http.MethodGet, "feed_follows"), middleware.Auth(cfg, cfg.HandleFeedFollowsGetMany))
+	mux.HandleFunc(makePattern(http.MethodPost, "feed_follows"), middleware.Auth(cfg, cfg.HandleFeedFollowsCreate))
+	mux.HandleFunc(makePattern(http.MethodDelete, "feed_follows/{feedFollowID}"), middleware.Auth(cfg, cfg.HandleFeedFollowsDelete))
 }
 
 func readyHandler(w http.ResponseWriter, r *http.Request) {

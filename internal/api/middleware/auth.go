@@ -1,4 +1,4 @@
-package middlewares
+package middleware
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/samvimes01/go-rss/internal/auth"
 	"github.com/samvimes01/go-rss/internal/config"
 	"github.com/samvimes01/go-rss/internal/db"
-	"github.com/samvimes01/go-rss/internal/domains/users"
+	"github.com/samvimes01/go-rss/internal/models"
 )
 
 type authedHandler func(http.ResponseWriter, *http.Request, *db.User)
@@ -28,7 +28,7 @@ func isAuthorized(cfg config.APPConfiger, r *http.Request) (*db.User, error) {
 		return &db.User{}, err
 	}
 
-	user, err := users.GetUserByApiKey(cfg, key)
+	user, err := models.GetUserByApiKey(cfg, key)
 	if err != nil {
 		return &db.User{}, err
 	}

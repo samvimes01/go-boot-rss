@@ -1,10 +1,9 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE feeds (
+CREATE TABLE feeds_follows (
   id UUID PRIMARY KEY,
-  name TEXT NOT NULL,
-  url TEXT NOT NULL UNIQUE,
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  feed_id UUID NOT NULL REFERENCES feeds(id) ON DELETE CASCADE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -12,5 +11,5 @@ CREATE TABLE feeds (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE feeds;
+DROP TABLE feeds_follows;
 -- +goose StatementEnd

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/samvimes01/go-rss/internal/auth"
-	"github.com/samvimes01/go-rss/internal/domains/users"
+	"github.com/samvimes01/go-rss/internal/models"
 )
 
 func (cfg *APIConfig) HandleUserCreate(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +22,7 @@ func (cfg *APIConfig) HandleUserCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := users.CreateUser(cfg, params.Name)
+	user, err := models.CreateUser(cfg, params.Name)
 
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user")
@@ -39,7 +39,7 @@ func (cfg *APIConfig) HandleUserGetCurrent(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	user, err := users.GetUserByApiKey(cfg, key)
+	user, err := models.GetUserByApiKey(cfg, key)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't find user")
 		return
