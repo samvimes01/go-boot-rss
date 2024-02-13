@@ -16,9 +16,9 @@ func InitDb(e *env.Env) *Queries {
 	dbURL := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s%s", e.DBUser, e.DBPass, e.DBHost, e.DBPort, e.DBName, ssl)
 
 	db, err := sql.Open("postgres", dbURL)
-  if err != nil {
-    panic(err)
-  }
+	if err != nil {
+		panic(err)
+	}
 
 	return New(db)
 }

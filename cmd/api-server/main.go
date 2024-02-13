@@ -8,7 +8,6 @@ import (
 	"github.com/samvimes01/go-rss/internal/env"
 )
 
-
 func main() {
 	envir := env.NewEnv()
 	cfg := routes.NewAPIConfig(envir)
@@ -16,9 +15,9 @@ func main() {
 	mux := http.NewServeMux()
 
 	routes.Setup(envir, mux, cfg)
-	
+
 	corsHandler := middleware.Cors(mux)
-	
+
 	server := http.Server{
 		Handler: corsHandler,
 		Addr:    envir.Host + ":" + envir.Port,

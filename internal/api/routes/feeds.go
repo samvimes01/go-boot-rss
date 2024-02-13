@@ -36,7 +36,7 @@ func (cfg *APIConfig) HandleFeedCreate(w http.ResponseWriter, r *http.Request, u
 	}
 
 	resp := struct {
-		Feed       *db.Feed        `json:"feed"`
+		Feed       *models.ApiFeed        `json:"feed"`
 		FeedFollow *db.FeedsFollow `json:"feed_follow"`
 	}{feed, feedFollow}
 

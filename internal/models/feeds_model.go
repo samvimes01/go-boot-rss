@@ -6,28 +6,28 @@ import (
 	"github.com/samvimes01/go-rss/internal/db"
 )
 
-func CreateFeed(cfg config.APPConfiger, name, url string, userId uuid.UUID) (*db.Feed, error) {
+func CreateFeed(cfg config.APPConfiger, name, url string, userId uuid.UUID) (*ApiFeed, error) {
 	params := db.CreateFeedParams{
 		ID:     uuid.New(),
 		Name:   name,
 		Url:    url,
 		UserID: userId,
 	}
-	user, err := cfg.GetDB().CreateFeed(cfg.GetCtx(), params)
+	feed, err := cfg.GetDB().CreateFeed(cfg.GetCtx(), params)
 	if err != nil {
 		return nil, err
 	}
-
-	return &user, nil
+	apiFeed := databaseFeedToFeed(feed)
+	return &apiFeed, nil
 }
 
-func GetAllFeeds(cfg config.APPConfiger) ([]db.Feed, error) {
+func GetAllFeeds(cfg config.APPConfiger) ([]ApiFeed, error) {
 	feeds, err := cfg.GetDB().GetAllFeeds(cfg.GetCtx())
 	if err != nil {
 		return nil, err
 	}
 
-	return feeds, nil
+	return databaseFeedsToFeed(feeds), nil
 }
 
 func FollowFeed(cfg config.APPConfiger, feedId, userId uuid.UUID) (*db.FeedsFollow, error) {
@@ -44,13 +44,13 @@ func FollowFeed(cfg config.APPConfiger, feedId, userId uuid.UUID) (*db.FeedsFoll
 	return &feedFollow, nil
 }
 
-func GetUserFeeds(cfg config.APPConfiger, userID uuid.UUID) ([]db.Feed, error) {
+func GetUserFeeds(cfg config.APPConfiger, userID uuid.UUID) ([]ApiFeed, error) {
 	feeds, err := cfg.GetDB().GetUserFeeds(cfg.GetCtx(), userID)
 	if err != nil {
 		return nil, err
 	}
 
-	return feeds, nil
+	return databaseFeedsToFeed(feeds), nil
 }
 
 func DeleteFeed(cfg config.APPConfiger, id uuid.UUID) error {

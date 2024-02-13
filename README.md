@@ -4,7 +4,7 @@
 
  - Install Docker
  - Install Go
- - create local .env `cp .env.example .env`, optionally fill with own values
+ - create local .env file `cp .env.example .env`, optionally fill with own values
 
 ## First run on local machine
 
