@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/samvimes01/go-rss/internal/auth"
 	"github.com/samvimes01/go-rss/internal/domains/users"
 )
 
@@ -25,6 +26,22 @@ func (cfg *APIConfig) HandleUserCreate(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user")
+		return
+	}
+
+	respondWithJSON(w, http.StatusCreated, *user)
+}
+
+func (cfg *APIConfig) HandleUserGetCurrent(w http.ResponseWriter, r *http.Request) {
+	key, err := auth.ParseApiKeyHeader(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	user, err := users.GetUserByApiKey(cfg, key)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Couldn't find user")
 		return
 	}
 

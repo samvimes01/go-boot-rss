@@ -17,6 +17,7 @@ func Setup(env *env.Env, mux *http.ServeMux, cfg *APIConfig) {
 	mux.HandleFunc(makePattern(http.MethodGet, "error"), errHandler)
 
 	mux.HandleFunc(makePattern(http.MethodPost, "users"), cfg.HandleUserCreate)
+	mux.HandleFunc(makePattern(http.MethodGet, "users"), cfg.HandleUserGetCurrent)
 }
 
 func readyHandler(w http.ResponseWriter, r *http.Request) {

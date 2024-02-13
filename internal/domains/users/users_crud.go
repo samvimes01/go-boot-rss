@@ -18,3 +18,12 @@ func CreateUser(cfg config.APPConfiger, name string) (*db.User, error) {
 
 	return &user, nil
 }
+
+func GetUserByApiKey(cfg config.APPConfiger, key string) (*db.User, error) {
+	user, err := cfg.GetDB().GetUserByApiKey(cfg.GetCtx(), key)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
