@@ -19,7 +19,7 @@ func init() {
 func main() {
 	mux := http.NewServeMux()
 	routes.Setup(envir, mux, cfg)
-	corsHandler := middlewares.CorsMiddleware(mux)
+	corsHandler := middlewares.Cors(mux)
 	server := http.Server{
 		Handler: corsHandler,
 		Addr:    envir.Host + ":" + envir.Port,

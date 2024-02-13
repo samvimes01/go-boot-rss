@@ -3,12 +3,13 @@ package routes
 import (
 	"net/http"
 
+	"github.com/samvimes01/go-rss/internal/api/middlewares"
 	"github.com/samvimes01/go-rss/internal/env"
 )
 
 var apiV = "/v1/"
 
-func makePattern(method, route string) string {
+func makePattern(method string, route string) string {
 	return method + " " + apiV + route
 }
 
@@ -18,6 +19,9 @@ func Setup(env *env.Env, mux *http.ServeMux, cfg *APIConfig) {
 
 	mux.HandleFunc(makePattern(http.MethodPost, "users"), cfg.HandleUserCreate)
 	mux.HandleFunc(makePattern(http.MethodGet, "users"), cfg.HandleUserGetCurrent)
+
+	mux.HandleFunc(makePattern(http.MethodGet, "feeds"), cfg.HandleFeedGetAll)
+	mux.HandleFunc(makePattern(http.MethodPost, "feeds"), middlewares.Auth(cfg, cfg.HandleFeedCreate))
 }
 
 func readyHandler(w http.ResponseWriter, r *http.Request) {
