@@ -10,15 +10,18 @@ export GOOSE_DRIVER=postgres
 export GOOSE_DBSTRING=$(DB_URL)
 export GOOSE_MIGRATION_DIR=sql/schema
 
+build:
+	go build -o server ./cmd/api-server/main.go
+
 test:
 	set -a && source .env && set +a && go test -v -cover ./...
 
-initdb: pg_volume_network pg_container createdb
+initdb: pg_volume_network startdb createdb
 
 pg_volume_network:
 	docker volume create $(PGDB_VOLUME) && docker network create -d bridge $(NETWORK)
 
-pg_container:
+startdb:
 	docker run --name $(CONTAINER) -v $(PGDB_VOLUME):/var/lib/postgresql/data --network $(NETWORK) -p $(DB_PORT):5432 -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASS) -d postgres:16.1-alpine
 
 createdb:
@@ -46,4 +49,4 @@ new_migration:
 sqlc:
 	sqlc generate
 
-.PHONY: test initdb pg_volume_network pg_container createdb dropdb dbup dbdown dbup1 dbdownto new_migration sqlc
+.PHONY: build test initdb pg_volume_network startdb createdb dropdb dbup dbdown dbup1 dbdownto new_migration sqlc

@@ -9,11 +9,10 @@ import (
 
 type APIConfig struct {
 	db  *db.Queries
-	ctx context.Context
+	ctx *context.Context
 }
 
-func NewAPIConfig(e *env.Env) *APIConfig {
-	ctx := context.Background()
+func NewAPIConfig(e *env.Env, ctx *context.Context) *APIConfig {
 	return &APIConfig{
 		db:  db.InitDb(e),
 		ctx: ctx,
@@ -23,6 +22,6 @@ func NewAPIConfig(e *env.Env) *APIConfig {
 func (c APIConfig) GetDB() *db.Queries {
 	return c.db
 }
-func (c APIConfig) GetCtx() context.Context {
+func (c APIConfig) GetCtx() *context.Context {
 	return c.ctx
 }

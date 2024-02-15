@@ -14,6 +14,8 @@ func makePattern(method string, route string) string {
 }
 
 func Setup(env *env.Env, mux *http.ServeMux, cfg *APIConfig) {
+	mux.Handle("/", http.NotFoundHandler())
+
 	mux.HandleFunc(makePattern(http.MethodGet, "readiness"), readyHandler)
 	mux.HandleFunc(makePattern(http.MethodGet, "error"), errHandler)
 

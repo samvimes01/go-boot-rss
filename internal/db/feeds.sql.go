@@ -113,6 +113,46 @@ func (q *Queries) GetAllFeeds(ctx context.Context) ([]Feed, error) {
 	return items, nil
 }
 
+const getNextFeedsToFetch = `-- name: GetNextFeedsToFetch :many
+SELECT id, name, url, user_id, created_at, updated_at, last_fetched_at FROM feeds WHERE last_fetched_at IS NULL ORDER BY last_fetched_at NULLS FIRST LIMIT $1 OFFSET $2
+`
+
+type GetNextFeedsToFetchParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) GetNextFeedsToFetch(ctx context.Context, arg GetNextFeedsToFetchParams) ([]Feed, error) {
+	rows, err := q.db.QueryContext(ctx, getNextFeedsToFetch, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Feed
+	for rows.Next() {
+		var i Feed
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Url,
+			&i.UserID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.LastFetchedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUserFeeds = `-- name: GetUserFeeds :many
 SELECT f.id, f.name, f.url, f.user_id, f.created_at, f.updated_at, f.last_fetched_at
 FROM feeds AS f
@@ -150,4 +190,13 @@ func (q *Queries) GetUserFeeds(ctx context.Context, id uuid.UUID) ([]Feed, error
 		return nil, err
 	}
 	return items, nil
+}
+
+const markAsFetched = `-- name: MarkAsFetched :exec
+UPDATE feeds SET last_fetched_at = now(), updated_at = now() WHERE id = $1
+`
+
+func (q *Queries) MarkAsFetched(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, markAsFetched, id)
+	return err
 }

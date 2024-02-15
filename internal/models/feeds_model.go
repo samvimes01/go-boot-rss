@@ -13,7 +13,8 @@ func CreateFeed(cfg config.APPConfiger, name, url string, userId uuid.UUID) (*Ap
 		Url:    url,
 		UserID: userId,
 	}
-	feed, err := cfg.GetDB().CreateFeed(cfg.GetCtx(), params)
+	ctx := cfg.GetCtx()
+	feed, err := cfg.GetDB().CreateFeed(*ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +23,8 @@ func CreateFeed(cfg config.APPConfiger, name, url string, userId uuid.UUID) (*Ap
 }
 
 func GetAllFeeds(cfg config.APPConfiger) ([]ApiFeed, error) {
-	feeds, err := cfg.GetDB().GetAllFeeds(cfg.GetCtx())
+	ctx := cfg.GetCtx()
+	feeds, err := cfg.GetDB().GetAllFeeds(*ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +38,8 @@ func FollowFeed(cfg config.APPConfiger, feedId, userId uuid.UUID) (*db.FeedsFoll
 		UserID: userId,
 		ID:     uuid.New(),
 	}
-	feedFollow, err := cfg.GetDB().CreateFeedFollow(cfg.GetCtx(), params)
+	ctx := cfg.GetCtx()
+	feedFollow, err := cfg.GetDB().CreateFeedFollow(*ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +48,8 @@ func FollowFeed(cfg config.APPConfiger, feedId, userId uuid.UUID) (*db.FeedsFoll
 }
 
 func GetUserFeeds(cfg config.APPConfiger, userID uuid.UUID) ([]ApiFeed, error) {
-	feeds, err := cfg.GetDB().GetUserFeeds(cfg.GetCtx(), userID)
+	ctx := cfg.GetCtx()
+	feeds, err := cfg.GetDB().GetUserFeeds(*ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -54,5 +58,6 @@ func GetUserFeeds(cfg config.APPConfiger, userID uuid.UUID) ([]ApiFeed, error) {
 }
 
 func DeleteFeed(cfg config.APPConfiger, id uuid.UUID) error {
-	return cfg.GetDB().DeleteFeedFollow(cfg.GetCtx(), id)
+	ctx := cfg.GetCtx()
+	return cfg.GetDB().DeleteFeedFollow(*ctx, id)
 }

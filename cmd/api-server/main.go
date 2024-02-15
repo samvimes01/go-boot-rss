@@ -1,16 +1,25 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
 
 	"github.com/samvimes01/go-rss/internal/api/middleware"
 	"github.com/samvimes01/go-rss/internal/api/routes"
 	"github.com/samvimes01/go-rss/internal/env"
+	rss_parser "github.com/samvimes01/go-rss/internal/rss-parser"
 )
 
 func main() {
+	ctx := context.Background()
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+	defer cancel()
+
 	envir := env.NewEnv()
-	cfg := routes.NewAPIConfig(envir)
+	cfg := routes.NewAPIConfig(envir, &ctx)
 
 	mux := http.NewServeMux()
 
@@ -22,6 +31,10 @@ func main() {
 		Handler: corsHandler,
 		Addr:    envir.Host + ":" + envir.Port,
 	}
+	if err := server.ListenAndServe(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+	}
 
-	server.ListenAndServe()
+	go rss_parser.CrawlFeeds(envir, cfg)
 }

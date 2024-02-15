@@ -8,5 +8,5 @@ import (
 
 type APPConfiger interface {
 	GetDB() *db.Queries
-	GetCtx() context.Context
+	GetCtx() *context.Context
 }

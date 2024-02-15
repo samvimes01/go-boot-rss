@@ -11,7 +11,8 @@ func CreateUser(cfg config.APPConfiger, name string) (*db.User, error) {
 		Name: name,
 		ID:   uuid.New(),
 	}
-	user, err := cfg.GetDB().CreateUser(cfg.GetCtx(), params)
+	ctx := cfg.GetCtx()
+	user, err := cfg.GetDB().CreateUser(*ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +21,8 @@ func CreateUser(cfg config.APPConfiger, name string) (*db.User, error) {
 }
 
 func GetUserByApiKey(cfg config.APPConfiger, key string) (*db.User, error) {
-	user, err := cfg.GetDB().GetUserByApiKey(cfg.GetCtx(), key)
+	ctx := cfg.GetCtx()
+	user, err := cfg.GetDB().GetUserByApiKey(*ctx, key)
 	if err != nil {
 		return nil, err
 	}

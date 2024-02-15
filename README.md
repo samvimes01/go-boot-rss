@@ -12,3 +12,7 @@
 make initdb # creates docker network and volume and run a postgres container, and creates a database
 make dbup # run migrations
 ```
+
+## Next run on local db
+
+`make startdb` to start postgres docker container
