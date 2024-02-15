@@ -15,4 +15,6 @@ make dbup # run migrations
 
 ## Next run on local db
 
-`make startdb` to start postgres docker container
+1. `make startdb` to start postgres docker container if not running
+2. `make build`
+3. `./server` to run the server

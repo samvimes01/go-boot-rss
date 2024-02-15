@@ -114,7 +114,7 @@ func (q *Queries) GetAllFeeds(ctx context.Context) ([]Feed, error) {
 }
 
 const getNextFeedsToFetch = `-- name: GetNextFeedsToFetch :many
-SELECT id, name, url, user_id, created_at, updated_at, last_fetched_at FROM feeds WHERE last_fetched_at IS NULL ORDER BY last_fetched_at NULLS FIRST LIMIT $1 OFFSET $2
+SELECT id, name, url, user_id, created_at, updated_at, last_fetched_at FROM feeds ORDER BY last_fetched_at NULLS FIRST LIMIT $1 OFFSET $2
 `
 
 type GetNextFeedsToFetchParams struct {

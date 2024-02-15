@@ -23,7 +23,7 @@ LEFT JOIN users ON users.id = feeds_follows.user_id
 WHERE users.id = $1;
 
 -- name: GetNextFeedsToFetch :many
-SELECT * FROM feeds WHERE last_fetched_at IS NULL ORDER BY last_fetched_at NULLS FIRST LIMIT $1 OFFSET $2;
+SELECT * FROM feeds ORDER BY last_fetched_at NULLS FIRST LIMIT $1 OFFSET $2;
 
 -- name: MarkAsFetched :exec
 UPDATE feeds SET last_fetched_at = now(), updated_at = now() WHERE id = $1;

@@ -17,6 +17,7 @@ func CrawlFeeds(e *env.Env, cfg config.APPConfiger) {
 	}
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
+
 	fetchData(cfg)
 	ctx := cfg.GetCtx()
 
@@ -24,7 +25,7 @@ func CrawlFeeds(e *env.Env, cfg config.APPConfiger) {
 		for {
 			select {
 			case <-(*ctx).Done():
-				fmt.Println("Finished: ", time.Now())
+				fmt.Println("Crawler finished: ", time.Now())
 				return
 			// interval task
 			case tm := <-ticker.C:
