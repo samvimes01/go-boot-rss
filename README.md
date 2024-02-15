@@ -1,8 +1,13 @@
 # Go rss aggregator 
 
+App that allows users subscribing to multiple rss2 feeds.
+Auth is simplifid, done with ApiKey header
+No 3d party routers used, since Go 1.22 intruduced new HandleFunc functionality.
+(Only 3d party is viper lib for getting config)
+
 ## Setup environment
 
- - Install Docker
+ - Install Docker (required only for local Postgresql)
  - Install Go
  - create local .env file `cp .env.example .env`, optionally fill with own values
 

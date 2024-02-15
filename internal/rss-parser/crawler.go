@@ -9,7 +9,9 @@ import (
 )
 
 func CrawlFeeds(e *env.Env, cfg config.APPConfiger) {
+	ctx := cfg.GetCtx()
 	var interval time.Duration
+
 	if e.FeedFetchInterval > 0 {
 		interval = time.Duration(e.FeedFetchInterval) * time.Second
 	} else {
@@ -18,8 +20,7 @@ func CrawlFeeds(e *env.Env, cfg config.APPConfiger) {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	fetchData(cfg)
-	ctx := cfg.GetCtx()
+	fetchData(cfg) // since ticker will fire after interval
 
 	go func() {
 		for {
