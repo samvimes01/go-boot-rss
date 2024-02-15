@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -31,10 +32,13 @@ func main() {
 		Handler: corsHandler,
 		Addr:    envir.Host + ":" + envir.Port,
 	}
+	
+	go rss_parser.CrawlFeeds(envir, cfg)
+
+	log.Println("Server started on: ", server.Addr)
+	
 	if err := server.ListenAndServe(); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
 	}
-
-	go rss_parser.CrawlFeeds(envir, cfg)
 }

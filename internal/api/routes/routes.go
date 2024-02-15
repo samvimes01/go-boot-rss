@@ -28,6 +28,8 @@ func Setup(env *env.Env, mux *http.ServeMux, cfg *APIConfig) {
 	mux.HandleFunc(makePattern(http.MethodGet, "feed_follows"), middleware.Auth(cfg, cfg.HandleFeedFollowsGetMany))
 	mux.HandleFunc(makePattern(http.MethodPost, "feed_follows"), middleware.Auth(cfg, cfg.HandleFeedFollowsCreate))
 	mux.HandleFunc(makePattern(http.MethodDelete, "feed_follows/{feedFollowID}"), middleware.Auth(cfg, cfg.HandleFeedFollowsDelete))
+
+	mux.HandleFunc(makePattern(http.MethodGet, "posts"), middleware.Auth(cfg, cfg.HandlPostsGetForUser))
 }
 
 func readyHandler(w http.ResponseWriter, r *http.Request) {

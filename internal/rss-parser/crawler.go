@@ -33,7 +33,5 @@ func CrawlFeeds(e *env.Env, cfg config.APPConfiger) {
 			}
 		}
 	}()
-	fmt.Println("Started: ", time.Now())
-
-	<-(*ctx).Done()
+	fmt.Println("Crawler started: ", time.Now())
 }

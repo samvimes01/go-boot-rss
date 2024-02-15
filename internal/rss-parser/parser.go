@@ -1,10 +1,13 @@
 package rss_parser
 
 import (
+	"database/sql"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/samvimes01/go-rss/internal/config"
 	"github.com/samvimes01/go-rss/internal/db"
@@ -73,7 +76,21 @@ func fetchFeedData(cfg config.APPConfiger, feed *db.Feed) {
 }
 
 func processFeed(cfg config.APPConfiger, rss *Rss, feed *db.Feed) {
-	log.Println(rss.Channel.Title)
 	ctx := cfg.GetCtx()
 	cfg.GetDB().MarkAsFetched(*ctx, feed.ID)
+	fmt.Println("Fetched feed: ", rss.Channel.Title, feed.Url)
+	for _, item := range rss.Channel.Items {
+		var date time.Time
+		if item.PubDate != "" {
+			date, _ = time.Parse("Mon, 02 Jan 2006 15:04:05 -0700", item.PubDate)
+		}
+		cfg.GetDB().CreatePost(*ctx, db.CreatePostParams{
+			FeedID:      feed.ID,
+			Title:       item.Title,
+			Description: sql.NullString{Valid: item.Description != "", String: item.Description},
+			Url:         item.Link,
+			PublishedAt: sql.NullTime{Valid: item.PubDate != "", Time: date},
+		})
+		fmt.Println("Inserted feed item: ", item.Title, item.Link)
+	}
 }
